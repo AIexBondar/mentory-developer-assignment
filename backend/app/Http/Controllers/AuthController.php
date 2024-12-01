@@ -50,6 +50,7 @@ class AuthController extends Controller
         }
 
         return response()->json([
+            'user' => $user,
             'token' => $user->createToken('DevTask')->plainTextToken,
         ]);
     }
