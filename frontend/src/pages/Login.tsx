@@ -1,13 +1,17 @@
-import React, { useState } from 'react';
-import { TextField, Button, Typography, Container, Box } from '@mui/material';
-import axios from 'axios';
-import { useAuth } from '../context/AuthContext';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from "react";
+import { TextField, Button, Typography, Container, Box } from "@mui/material";
+import axios from "axios";
+import { useAuth } from "../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 const Login: React.FC = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const csrfToken = document
+    ?.querySelector('meta[name="csrf-token"]')
+    ?.getAttribute("content");
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
 
   const { login } = useAuth();
   const navigate = useNavigate();
@@ -16,27 +20,28 @@ const Login: React.FC = () => {
     e.preventDefault();
 
     try {
-      const response = await axios.post('http://localhost:8000/api/login', {
+      const response = await axios.post("http://localhost:8000/api/login", {
         email,
         password,
       });
 
       const { token } = response.data;
-      const userResponse = await axios.get('http://localhost:8000/api/user', {
+
+      const userResponse = await axios.get("http://localhost:8000/api/user", {
         headers: { Authorization: `Bearer ${token}` },
       });
 
       const user = userResponse.data;
       login(user, token);
-      navigate('/');
+      navigate("/");
     } catch (error) {
-      setError('Invalid credentials');
+      setError("Invalid credentials");
     }
   };
 
   return (
     <Container>
-      <Box sx={{ maxWidth: 400, margin: '0 auto', padding: 2 }}>
+      <Box sx={{ maxWidth: 400, margin: "0 auto", padding: 2 }}>
         <Typography variant="h5" gutterBottom>
           Login
         </Typography>

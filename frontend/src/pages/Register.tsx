@@ -1,16 +1,20 @@
-import React, { useState } from 'react';
-import { TextField, Button, Typography, Container, Box } from '@mui/material';
-import axios from 'axios';
-import { useAuth } from '../context/AuthContext';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from "react";
+import { TextField, Button, Typography, Container, Box } from "@mui/material";
+import axios from "axios";
+import { useAuth } from "../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 const Register: React.FC = () => {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [error, setError] = useState('');
+  const csrfToken = document
+    ?.querySelector('meta[name="csrf-token"]')
+    ?.getAttribute("content");
+
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [error, setError] = useState("");
 
   const { login } = useAuth();
   const navigate = useNavigate();
@@ -19,35 +23,40 @@ const Register: React.FC = () => {
     e.preventDefault();
 
     if (password !== confirmPassword) {
-      setError('Passwords do not match');
+      setError("Passwords do not match");
       return;
     }
 
     try {
-      const response = await axios.post('http://localhost:8000/api/register', {
-        name,
-        email,
-        username,
-        password,
-        password_confirmation: confirmPassword,
-      }, {
-        withCredentials: true,
-        headers: {
-            'Accept': 'application/json',
+      const response = await axios.post(
+        "http://localhost:8000/api/register",
+        {
+          name,
+          email,
+          username,
+          password,
+          password_confirmation: confirmPassword,
+        },
+        {
+          withCredentials: true,
+          headers: {
+            Accept: "application/json",
+            'X-CSRF-TOKEN': csrfToken,
+          },
         }
-      });
+      );
 
       const { user, token } = response.data;
       login(user, token);
-      navigate('/');
+      navigate("/");
     } catch (error) {
-      setError('Failed to register');
+      setError("Failed to register");
     }
   };
 
   return (
     <Container>
-      <Box sx={{ maxWidth: 400, margin: '0 auto', padding: 2 }}>
+      <Box sx={{ maxWidth: 400, margin: "0 auto", padding: 2 }}>
         <Typography variant="h5" gutterBottom>
           Register
         </Typography>

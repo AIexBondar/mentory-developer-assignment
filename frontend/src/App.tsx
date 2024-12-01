@@ -8,6 +8,8 @@ import {
 import { AuthProvider, useAuth } from "./context/AuthContext";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
+import TaskListPage from "./pages/TaskListPage";
+import MainPage from "./pages/MainPage";
 
 const ProtectedRoute: React.FC<{ element: React.ReactNode }> = ({
   element,
@@ -26,11 +28,9 @@ const App: React.FC = () => {
         <Routes>
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
-          {/* Используем ProtectedRoute для защиты страниц, которые требуют аутентификации */}
-          <Route
-            path="/dashboard"
-            element={<ProtectedRoute element={<div>Dashboard</div>} />}
-          />
+          {/* <Route path="/" element={<ProtectedRoute element={<div>Dashboard</div>} />} /> */}
+          <Route path="/" element={<MainPage />} />
+          <Route path="/task-list/:id" element={<TaskListPage />} />
         </Routes>
       </Router>
     </AuthProvider>
